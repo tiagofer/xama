@@ -1,10 +1,13 @@
 fileFormatVersion: 2
 guid: d7af5f72ada98314491f07de833d9bc4
-timeCreated: 1433077929
+timeCreated: 1433395313
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - rainPrefab: {fileID: 179978, guid: 82c88a9fa566ccf459827cd1febae5c7, type: 2}
+  - prefabRotation: {instanceID: 0}
+  - north: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
