@@ -12,6 +12,10 @@ public class CanvasControl : MonoBehaviour {
 	public Slider southEastBar;
 	public Slider centerEastBar;
 
+	public Text score;
+
+	public Text countCorrect;
+
 	public void UpdateSliderNorth (float northWater) {
 
 		northBar.value = northWater;
@@ -35,7 +39,15 @@ public class CanvasControl : MonoBehaviour {
 	}
 	public void UpdateSliderCenterEast (float centerEastWater) {
 
-		centerEastBar.value = centerEastWater;
-		
+		centerEastBar.value = centerEastWater;		
+	}
+
+	public void UpdateTextScore(int score) {
+		this.score.text = score.ToString();
+	}
+
+
+	public void UpdateCountCorrect(int count) {
+		countCorrect.text = count.ToString();
 	}
 }

@@ -49,12 +49,14 @@
      <Compile Include="Assets\ObjectPool\Scripts\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\CanvasControl.cs" />
      <Compile Include="Assets\Scripts\CenterEast.cs" />
+     <Compile Include="Assets\Scripts\CompareSequence.cs" />
      <Compile Include="Assets\Scripts\ControlRegion.cs" />
      <Compile Include="Assets\Scripts\DestroyCloud.cs" />
+     <Compile Include="Assets\Scripts\DestroyInstrument.cs" />
      <Compile Include="Assets\Scripts\Menu.cs" />
      <Compile Include="Assets\Scripts\North.cs" />
      <Compile Include="Assets\Scripts\NorthEast.cs" />
-     <Compile Include="Assets\Scripts\RainController.cs" />
+     <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Region.cs" />
      <Compile Include="Assets\Scripts\SequenceController.cs" />
      <Compile Include="Assets\Scripts\South.cs" />
