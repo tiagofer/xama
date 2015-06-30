@@ -5,7 +5,7 @@ public class DestroyInstrument : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		Destroy(this.gameObject, 3.01f);
+		Destroy(this.gameObject, 1.4f);
 	}
 	
 }

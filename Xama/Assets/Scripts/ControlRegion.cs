@@ -4,90 +4,99 @@ using UnityEngine.UI;
 
 public class ControlRegion : MonoBehaviour {
 
-	public GameObject rainPrefab;
-	public Transform prefabRotation;
-
-	private bool _activate;
-	private int _region;
-
-	//regions object
-//	private  North north;
-//	private South south;
-//	private CenterEast centerEast;
-//	private SouthEast southEast;
-//	private NorthEast northEast;
-
 	public GameObject north;
 	public GameObject south;
 	public GameObject centerEast;
 	public GameObject southEast;
 	public GameObject northEast;
 
+	public GameObject rainPrefab;
+	public GameObject canvas;
+
+	private Transform _north;
+	private Transform _northEast;
+	private Transform _south;
+	private Transform _southEast;
+	private Transform _centerEast;
+
+	public GameObject player;
+
 	//calculate time to refresh waterlevel
 	private float _actualTime;
+	private float _gameTime;
+	private float _totalGame;
 
 	void Start() {
-		rainPrefab.CreatePool();
+		_totalGame = 60.0f;
 		StartCoroutine("RefreshWaterLevel");
-		//StartCoroutine(RainPosition());
+		_north = north.gameObject.GetComponent<Transform>();
+		_northEast = northEast.gameObject.GetComponent<Transform>();
+		_south = south.gameObject.GetComponent<Transform>();
+		_southEast = southEast.gameObject.GetComponent<Transform>();
+		_centerEast = centerEast.gameObject.GetComponent<Transform>();
+
+	}
+
+	void Update() {
+		_gameTime += Time.deltaTime;
+		canvas.gameObject.GetComponent<CanvasControl>().UpdateTimer((int)_totalGame - (int)_gameTime);
 	}
 
 	IEnumerator RefreshWaterLevel() {
 
 		while (true) {
+
 			north.GetComponent<North>().updateWaterLevel();
 			south.GetComponent<South>().updateWaterLevel();
 			southEast.GetComponent<SouthEast>().updateWaterLevel();
 			northEast.GetComponent<NorthEast>().updateWaterLevel();
 			centerEast.GetComponent<CenterEast>().updateWaterLevel();
 
-			gameObject.SendMessage("UpdateSliderNorth", north.GetComponent<North>().waterLevel);
-			gameObject.SendMessage("UpdateSliderNorthEast", northEast.GetComponent<NorthEast>().waterLevel);
-			gameObject.SendMessage("UpdateSliderSouth", south.GetComponent<South>().waterLevel);
-			gameObject.SendMessage("UpdateSliderSouthEast", southEast.GetComponent<SouthEast>().waterLevel);		
-			gameObject.SendMessage("UpdateSliderCenterEast", centerEast.GetComponent<CenterEast>().waterLevel);
+			canvas.gameObject.GetComponent<CanvasControl>().UpdateSliderNorth(north.GetComponent<North>().waterLevel);
+			canvas.gameObject.GetComponent<CanvasControl>().UpdateSliderNorthEast(northEast.GetComponent<NorthEast>().waterLevel);
+			canvas.gameObject.GetComponent<CanvasControl>().UpdateSliderSouth(south.GetComponent<South>().waterLevel);
+			canvas.gameObject.GetComponent<CanvasControl>().UpdateSliderSouthEast(southEast.GetComponent<SouthEast>().waterLevel);
+			canvas.gameObject.GetComponent<CanvasControl>().UpdateSliderCenterEast(centerEast.GetComponent<CenterEast>().waterLevel);
 
-			yield return new WaitForSeconds(1.0f);
+			if (north.GetComponent<North>().waterLevel <= 0 || 
+			    northEast.GetComponent<NorthEast>().waterLevel <= 0 ||
+			    south.GetComponent<South>().waterLevel == 0 ||
+			    southEast.GetComponent<SouthEast>().waterLevel <= 0 ||
+			    centerEast.GetComponent<CenterEast>().waterLevel <= 0) {
+				Application.LoadLevel(3);
+			}
+
+			if (north.GetComponent<North>().waterLevel > 0 && 
+			    northEast.GetComponent<NorthEast>().waterLevel > 0 &&
+			    south.GetComponent<South>().waterLevel > 0 &&
+			    southEast.GetComponent<SouthEast>().waterLevel > 0 &&
+			    centerEast.GetComponent<CenterEast>().waterLevel > 0 &&
+			    _gameTime >= _totalGame) {
+				Application.LoadLevel(2);
+			}
+
+			yield return new WaitForSeconds(0.5f);
 		}
 	}
 
-	IEnumerator RainPosition () {
+	public void updateLevel(string region) {
 
-		while (true) {
-			_region = Random.Range (1, 6);
-			if (!rainPrefab.CompareTag("north") && _region == 1) {
-				rainPrefab.Spawn( north.GetComponent<North>().position, prefabRotation.rotation);
-				rainPrefab.tag = "north";
-				//Debug.Log(rainPrefab.tag);
-				yield return new WaitForSeconds(2.0f);
-			}
-			if (!rainPrefab.CompareTag("south") && _region == 2) {
-				rainPrefab.Spawn( south.GetComponent<South>().position, prefabRotation.rotation);
-				rainPrefab.tag = "south";
-				//Debug.Log(rainPrefab.tag);
-				yield return new WaitForSeconds(2.0f);
-			}
-			if (!rainPrefab.CompareTag("southEast") && _region == 3) {
-				rainPrefab.Spawn( southEast.GetComponent<SouthEast>().position, prefabRotation.rotation);
-				rainPrefab.tag = "southEast";
-				//Debug.Log(rainPrefab.tag);
-				yield return new WaitForSeconds(2.0f);
-			}
-			if (!rainPrefab.CompareTag("northEast") && _region == 4) {
-				rainPrefab.Spawn( northEast.GetComponent<NorthEast>().position, prefabRotation.rotation);
-				rainPrefab.tag = "northEast";
-				//Debug.Log(rainPrefab.tag);
-				yield return new WaitForSeconds(2.0f);
-			}
-			if (!rainPrefab.CompareTag("centerEast") && _region == 5) {
-				rainPrefab.Spawn( centerEast.GetComponent<CenterEast>().position, prefabRotation.rotation);
-				rainPrefab.tag = "centerEast";
-				//Debug.Log(rainPrefab.tag);
-				yield return new WaitForSeconds(2.0f);
-			}
-		
+		if (region == "north") {
+			north.GetComponent<North>().addWaterLevel(player.gameObject.GetComponent<Player>().playerRate);
+			Instantiate(rainPrefab, new Vector3( _north.position.x, _north.position.y, -0.9f), _north.rotation);
+		} else if (region == "south") {
+			south.GetComponent<South>().addWaterLevel(player.gameObject.GetComponent<Player>().playerRate);
+			Instantiate(rainPrefab, new Vector3( _south.position.x, _south.position.y, -0.9f), _north.rotation);
+		} else if (region == "southEast") {
+			southEast.GetComponent<SouthEast>().addWaterLevel(player.gameObject.GetComponent<Player>().playerRate);
+			Instantiate(rainPrefab, new Vector3( _southEast.position.x, _southEast.position.y, -0.9f), _north.rotation);
+		} else if (region == "northEast") {
+			northEast.GetComponent<NorthEast>().addWaterLevel(player.gameObject.GetComponent<Player>().playerRate);
+			Instantiate(rainPrefab, new Vector3( _northEast.position.x, _northEast.position.y, -0.9f), _north.rotation);
+		} else if (region == "centerEast") {
+			centerEast.GetComponent<CenterEast>().addWaterLevel(player.gameObject.GetComponent<Player>().playerRate);
+			Instantiate(rainPrefab, new Vector3( _centerEast.position.x, _centerEast.position.y, -0.9f), _north.rotation);
 		}
-
 	}
 		                                  
 }

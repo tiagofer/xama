@@ -13,8 +13,16 @@ public class CanvasControl : MonoBehaviour {
 	public Slider centerEastBar;
 
 	public Text score;
-
+	public Text updateTime;
 	public Text countCorrect;
+
+	public GameObject tenAnimator;
+
+	private Animator animator;
+
+	void Start() {
+		animator = tenAnimator.GetComponent<Animator>();
+	}
 
 	public void UpdateSliderNorth (float northWater) {
 
@@ -44,10 +52,24 @@ public class CanvasControl : MonoBehaviour {
 
 	public void UpdateTextScore(int score) {
 		this.score.text = score.ToString();
+		StartCoroutine(UpdatePlusAnimation());
+		StopCoroutine(UpdatePlusAnimation());
 	}
 
 
 	public void UpdateCountCorrect(int count) {
 		countCorrect.text = count.ToString();
+
+	}
+
+	public void UpdateTimer(int time) {
+		updateTime.text = time.ToString();
+	}
+
+	IEnumerator UpdatePlusAnimation() {
+		animator.SetInteger("activate",1);
+		yield return new WaitForSeconds(1.0f);
+		animator.SetInteger("activate",0);
+		//yield return null;
 	}
 }

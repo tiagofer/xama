@@ -52,7 +52,11 @@ public class Region : MonoBehaviour {
 	}
 
 	public void updateWaterLevel(){
-		_waterLevel-=_rate;
+		_waterLevel= (_waterLevel - _rate);
+	}
+
+	public void addWaterLevel(float ratePlayer){
+		_waterLevel += ratePlayer;
 	}
 
 
